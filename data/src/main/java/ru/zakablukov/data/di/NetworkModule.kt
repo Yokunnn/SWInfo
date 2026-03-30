@@ -1,4 +1,4 @@
-package ru.zakablukov.data
+package ru.zakablukov.data.di
 
 import dagger.Module
 import dagger.Provides
@@ -13,7 +13,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DataModule {
+object NetworkModule {
     private const val BASE_URL = "https://swapi.dev/api/"
 
     @Singleton
