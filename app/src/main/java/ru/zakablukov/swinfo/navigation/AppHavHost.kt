@@ -5,6 +5,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import ru.zakablukov.swinfo.screen.PeopleDetailsScreen
 import ru.zakablukov.swinfo.screen.PeopleListScreen
 
 @Composable
@@ -13,14 +15,23 @@ fun AppNavHost(
 ) {
     NavHost(
         navHostController,
-        startDestination = AppDestination.PeopleList.route
+        startDestination = AppDestination.PeopleList
     ) {
-        composable(route = AppDestination.PeopleList.route) {
+        composable<AppDestination.PeopleList> {
             PeopleListScreen(
                 onPeopleClick = { id ->
                     navHostController.navigate(
-                        AppDestination.PeopleDetails.createRoute(id)
+                        AppDestination.PeopleDetails(id)
                     )
+                }
+            )
+        }
+        composable<AppDestination.PeopleDetails> {
+            val id = it.toRoute<AppDestination.PeopleDetails>().peopleId
+            PeopleDetailsScreen(
+                id,
+                onBackClick = {
+                    navHostController.popBackStack()
                 }
             )
         }
