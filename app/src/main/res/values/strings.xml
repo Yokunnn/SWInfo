@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">SWInfo</string>
+    <string name="people_info_title">Basic info</string>
+    <string name="people_name">Name</string>
+    <string name="people_height">Height</string>
+    <string name="people_mass">Mass</string>
+    <string name="people_hair_color">Hair color</string>
+    <string name="people_skin_color">Skin color</string>
+    <string name="people_eye_color">Eye color</string>
+    <string name="people_birth_year">Birth year</string>
+    <string name="people_gender">Gender</string>
+    <string name="people_films">Films (not yet implemented)</string>
+    <string name="text_no_info_people">No information about that character yet</string>
+    <string name="title_swchars">Star Wars Characters</string>
+    <string name="tag_people">people</string>
+    <string name="text_error_swcharslist">Error while loading characters</string>
+    <string name="msg_loading">loading</string>
+    <string name="msg_success">success</string>
+    <string name="msg_error">error</string>
+    <string name="msg_init">init</string>
 </resources>
