@@ -2,8 +2,8 @@ package ru.zakablukov.domain.usecase
 
 import ru.zakablukov.domain.repository.PeopleRepository
 
-class GetAllPeopleUseCase(
+class GetPeopleUseCase(
     private val peopleRepository: PeopleRepository
 ) {
-    suspend operator fun invoke() = peopleRepository.getAllPeople()
+    operator fun invoke() = peopleRepository.getPeople()
 }

@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
@@ -23,23 +22,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import ru.zakablukov.domain.model.People
 import ru.zakablukov.swinfo.R
-import ru.zakablukov.swinfo.enums.LoadState
-import ru.zakablukov.swinfo.ui.theme.SWInfoTheme
 import ru.zakablukov.swinfo.viewmodel.PeopleListViewModel
 
 @Composable
@@ -47,22 +44,16 @@ fun PeopleListScreen(
     onPeopleClick: (Int) -> Unit,
     viewModel: PeopleListViewModel = hiltViewModel()
 ) {
-    val peopleAll by viewModel.peopleResult.collectAsStateWithLifecycle()
-    val peopleLoadState by viewModel.peopleLoadState.collectAsStateWithLifecycle()
+    val lazyPagingPeople = viewModel.peopleResult.collectAsLazyPagingItems()
 
-    LaunchedEffect(Unit) {
-        viewModel.loadAllPeople()
-    }
-
-    PeopleListScreenContent(onPeopleClick, peopleAll, peopleLoadState)
+    PeopleListScreenContent(onPeopleClick, lazyPagingPeople)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PeopleListScreenContent(
     onPeopleClick: (Int) -> Unit,
-    peopleAll: List<People>,
-    loadState: LoadState?
+    lazyPagingPeople: LazyPagingItems<People>
 ) {
     Scaffold(
         topBar = {
@@ -76,8 +67,8 @@ fun PeopleListScreenContent(
             )
         }
     ) { paddingValues ->
-        when (loadState) {
-            LoadState.LOADING -> {
+        when (lazyPagingPeople.loadState.refresh) {
+            is LoadState.Loading -> {
                 Log.d(stringResource(R.string.tag_people), stringResource(R.string.msg_loading))
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -87,29 +78,34 @@ fun PeopleListScreenContent(
                 }
             }
 
-            LoadState.SUCCESS -> {
+            is LoadState.NotLoading -> {
                 Log.d(
                     stringResource(R.string.tag_people),
                     stringResource(R.string.msg_success)
                 )
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(paddingValues),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(
-                        items = peopleAll,
-                        key = { people -> people.id }
-                    ) { people ->
-                        PeopleListItem(
-                            people,
-                            { onPeopleClick(people.id) }
-                        )
+                        count = lazyPagingPeople.itemCount,
+                        key = lazyPagingPeople.itemKey { people -> people.id }
+                    ) { index ->
+                        val people = lazyPagingPeople[index]
+                        people?.let {
+                            PeopleListItem(
+                                people,
+                                { onPeopleClick(people.id) }
+                            )
+                        }
                     }
                 }
             }
 
-            LoadState.ERROR -> {
+            is LoadState.Error -> {
                 Log.d(stringResource(R.string.tag_people), stringResource(R.string.msg_error))
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -118,8 +114,6 @@ fun PeopleListScreenContent(
                     SectionTitle(stringResource(R.string.text_error_swcharslist))
                 }
             }
-
-            null -> Log.d(stringResource(R.string.tag_people), stringResource(R.string.msg_init))
         }
     }
 }
@@ -145,18 +139,6 @@ fun PeopleListItem(people: People, onPeopleClick: (Int) -> Unit) {
             "Height: ${people.height}cm, Mass: ${people.mass} kg, Hair: ${people.hairColor}, Eyes: ${people.eyeColor}",
             fontSize = 14.sp,
             lineHeight = 18.sp
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PeopleListScreenPreview() {
-    SWInfoTheme() {
-        PeopleListScreenContent(
-            {},
-            emptyList(),
-            LoadState.SUCCESS
         )
     }
 }
