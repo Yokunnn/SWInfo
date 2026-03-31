@@ -10,6 +10,7 @@ fun PeopleListResponse.toDomain(): List<People> =
 
 fun PeopleResponse.toDomain(): People =
     People(
+        Uri.parse(url).pathSegments.lastOrNull()?.toInt() ?: -1,
         name,
         height,
         mass,

@@ -1,6 +1,7 @@
 package ru.zakablukov.domain.model
 
 data class People(
+    val id: Int,
     val name: String,
     val height: String,
     val mass: String,
