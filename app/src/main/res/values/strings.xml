@@ -18,4 +18,5 @@
     <string name="msg_success">success</string>
     <string name="msg_error">error</string>
     <string name="msg_init">init</string>
+    <string name="tag_people_details">people details</string>
 </resources>

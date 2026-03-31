@@ -6,6 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ru.zakablukov.domain.repository.PeopleRepository
 import ru.zakablukov.domain.usecase.GetAllPeopleUseCase
+import ru.zakablukov.domain.usecase.GetPeopleByIdUseCase
 import javax.inject.Singleton
 
 @Module
@@ -17,4 +18,10 @@ object UseCaseModule {
     fun provideGetAllPeopleUseCase(
         peopleRepository: PeopleRepository
     ) = GetAllPeopleUseCase(peopleRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetPeopleByIdUseCase(
+        peopleRepository: PeopleRepository
+    ) = GetPeopleByIdUseCase(peopleRepository)
 }
