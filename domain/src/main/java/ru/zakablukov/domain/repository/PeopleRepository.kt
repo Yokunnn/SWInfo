@@ -7,5 +7,5 @@ import ru.zakablukov.domain.util.Request
 
 interface PeopleRepository {
     fun getPeople(): Flow<PagingData<People>>
-    suspend fun getPeopleById(id: Int): Flow<Request<People>>
+    fun getPeopleById(id: Int): Flow<Request<People>>
 }

@@ -67,51 +67,45 @@ fun PeopleListScreenContent(
             )
         }
     ) { paddingValues ->
-        when (lazyPagingPeople.loadState.refresh) {
-            is LoadState.Loading -> {
-                Log.d(stringResource(R.string.tag_people), stringResource(R.string.msg_loading))
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
+        if (lazyPagingPeople.loadState.refresh is LoadState.Error && lazyPagingPeople.itemCount == 0) {
+            Log.d(stringResource(R.string.tag_people), stringResource(R.string.msg_error))
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                SectionTitle(stringResource(R.string.text_error_swcharslist))
             }
-
-            is LoadState.NotLoading -> {
-                Log.d(
-                    stringResource(R.string.tag_people),
-                    stringResource(R.string.msg_success)
-                )
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(
-                        count = lazyPagingPeople.itemCount,
-                        key = lazyPagingPeople.itemKey { people -> people.id }
-                    ) { index ->
-                        val people = lazyPagingPeople[index]
-                        people?.let {
-                            PeopleListItem(
-                                people,
-                                { onPeopleClick(people.id) }
-                            )
-                        }
+        } else if (lazyPagingPeople.loadState.refresh is LoadState.Loading && lazyPagingPeople.itemCount == 0) {
+            Log.d(stringResource(R.string.tag_people), stringResource(R.string.msg_loading))
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        } else {
+            Log.d(
+                stringResource(R.string.tag_people),
+                stringResource(R.string.msg_success)
+            )
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(
+                    count = lazyPagingPeople.itemCount,
+                    key = lazyPagingPeople.itemKey { people -> people.id }
+                ) { index ->
+                    val people = lazyPagingPeople[index]
+                    people?.let {
+                        PeopleListItem(
+                            people,
+                            { onPeopleClick(people.id) }
+                        )
                     }
-                }
-            }
-
-            is LoadState.Error -> {
-                Log.d(stringResource(R.string.tag_people), stringResource(R.string.msg_error))
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    SectionTitle(stringResource(R.string.text_error_swcharslist))
                 }
             }
         }

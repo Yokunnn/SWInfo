@@ -5,5 +5,5 @@ import ru.zakablukov.domain.repository.PeopleRepository
 class GetPeopleByIdUseCase(
     val peopleRepository: PeopleRepository
 ) {
-    suspend fun invoke(id: Int) = peopleRepository.getPeopleById(id)
+    fun invoke(id: Int) = peopleRepository.getPeopleById(id)
 }

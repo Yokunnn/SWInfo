@@ -87,25 +87,44 @@ fun PeopleDetailsScreenContent(
     ) { paddingValues ->
         when (loadState) {
             LoadState.LOADING -> {
-                Log.d(stringResource(R.string.tag_people_details), stringResource(R.string.msg_loading))
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
+                if (people == null) {
+                    Log.d(
+                        stringResource(R.string.tag_people_details),
+                        stringResource(R.string.msg_loading)
+                    )
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
             }
-            LoadState.SUCCESS -> Log.d(stringResource(R.string.tag_people_details), stringResource(R.string.msg_success))
+
+            LoadState.SUCCESS -> Log.d(
+                stringResource(R.string.tag_people_details),
+                stringResource(R.string.msg_success)
+            )
+
             LoadState.ERROR -> {
-                Log.d(stringResource(R.string.tag_people_details), stringResource(R.string.msg_error))
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    SectionTitle(stringResource(R.string.text_no_info_people))
+                if (people == null) {
+                    Log.d(
+                        stringResource(R.string.tag_people_details),
+                        stringResource(R.string.msg_error)
+                    )
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        SectionTitle(stringResource(R.string.text_no_info_people))
+                    }
                 }
             }
-            null -> Log.d(stringResource(R.string.tag_people_details), stringResource(R.string.msg_init))
+
+            null -> Log.d(
+                stringResource(R.string.tag_people_details),
+                stringResource(R.string.msg_init)
+            )
         }
         people?.let {
             LazyColumn(
